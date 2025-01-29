@@ -1,12 +1,14 @@
 
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.lang.*;
 
 public class Main {
 
     static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
+
 
         int Options;
         int password;
