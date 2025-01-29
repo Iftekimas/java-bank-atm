@@ -8,6 +8,8 @@ public class PinVerifier {
         Scanner scanner = new Scanner(System.in);
         String pin;
 
+        int tst = 142;
+
         do {
             System.out.print("Set your 4-digit PIN: ");
             pin = scanner.nextLine();
@@ -26,8 +28,6 @@ public class PinVerifier {
 
             int option = scanner.nextInt();
             scanner.nextLine();
-            
-            
 
             if (option == 2) {
                 System.out.println("Goodbye!");
@@ -60,10 +60,10 @@ public class PinVerifier {
                 }
 
                 String newPin;
-                do{
+                do {
                     System.out.println("Insert your new 4-digit Pin: ");
                     newPin = scanner.nextLine();
-                }while (!isValidPin(newPin));
+                } while (!isValidPin(newPin));
 
                 pin = newPin;
                 System.out.println("Your pin has been successfully changed");
@@ -76,8 +76,20 @@ public class PinVerifier {
         scanner.close();
     }
 
-    public static boolean isValidPin(String pin){
+    public static boolean isValidPin(String pin) {
         return pin.matches("\\d{4}");
+    }
+
+    public static int StoredPin(int tst) {
+
+        return tst;
+
+
+    }
+
+    public static void greetings() {
+
+        System.out.println("Hello ");
     }
 
 }
