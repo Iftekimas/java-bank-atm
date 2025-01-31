@@ -55,13 +55,22 @@ public class UserManager {
     }
 
     public void handleUserLogin(Scanner scanner) {
-        User user;
-        do {
+        User user = null;
+        int attempts = 0;
+        while (attempts < 3 && user == null) {
             user = loginUser(scanner);
-        } while (user == null);
+            if (user == null) {
+                attempts++;
+                System.out.println("Invalid credentials. Attempts left: " + (3 - attempts));
+            }
+        }
 
-        System.out.println("\nWelcome, " + user.getUsername() + "!");
-        System.out.println("Your balance: " + user.getBalance() + " " + user.getCurrency());
+        if (user != null) {
+            System.out.println("\nWelcome, " + user.getUsername() + "!");
+            System.out.println("Your balance: " + user.getBalance() + " " + user.getCurrency());
+        } else {
+            System.out.println("Returning to main menu.");
+        }
     }
 
     public void handleUserCreation(Scanner scanner) {
