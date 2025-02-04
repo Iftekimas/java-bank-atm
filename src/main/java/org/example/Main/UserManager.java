@@ -16,6 +16,12 @@ public class UserManager {
         users.add(new User("user3", "pass3", 750.0, "GBP"));
     }
 
+    public void handleUserCreation(Scanner scanner) {
+        if (!createUser(scanner)) {
+            System.out.println("Returning to main menu.");
+        }
+    }
+
     public User loginUser(Scanner scanner) {
         System.out.print("Enter username: ");
         String username = scanner.nextLine();
@@ -49,14 +55,30 @@ public class UserManager {
         System.out.print("Enter new password: ");
         String password = scanner.nextLine();
         System.out.print("Enter initial balance: ");
+        
+        if (!scanner.hasNextDouble()) {
+            System.out.println("Invalid input. Initial balance must be a number.");
+            scanner.nextLine(); // Clear buffer
+            return false;
+        }
+        
         double balance = scanner.nextDouble();
         if (balance < 0) {
             System.out.println("Initial balance cannot be negative.");
+            scanner.nextLine(); // Clear buffer
             return false;
         }
         scanner.nextLine(); // Consume newline
-        System.out.print("Enter currency (USD, COP, GBP): ");
-        String currency = scanner.nextLine();
+        String currency;
+        while (true) {
+            System.out.print("Enter currency (USD, COP, GBP): ");
+            currency = scanner.nextLine().toUpperCase();
+            if (currency.equals("USD") || currency.equals("COP") || currency.equals("GBP")) {
+                break;
+            }
+            System.out.println("Invalid currency. Please enter USD, COP, or GBP.");
+        }
+
 
         users.add(new User(username, password, balance, currency));
         System.out.println("User created successfully! Current user count: " + users.size()); // Debug statement
@@ -88,10 +110,17 @@ public class UserManager {
             System.out.println("2. Transfer");
             System.out.println("3. Change Password");
             System.out.println("4. Log");
-            System.out.println("5. Main Menu");
-            System.out.println("6. Exit");
+            System.out.println("5. Withdraw");
+            System.out.println("6. Main Menu");
+            System.out.println("7. Exit");
             System.out.print("Select an option: ");
 
+            if (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.nextLine(); // Clear buffer
+                continue;
+            }
+            
             int choice = scanner.nextInt();
             scanner.nextLine(); // Consume newline
 
@@ -105,6 +134,11 @@ public class UserManager {
                     User recipient = findUserByUsername(recipientName);
                     if (recipient != null) {
                         System.out.print("Enter amount to transfer: ");
+                        if (!scanner.hasNextDouble()) {
+                            System.out.println("Invalid input. Amount must be a number.");
+                            scanner.nextLine(); // Clear buffer
+                            break;
+                        }
                         double amount = scanner.nextDouble();
                         if (amount <= 0) {
                             System.out.println("Transfer amount must be positive.");
@@ -113,6 +147,7 @@ public class UserManager {
                         } else {
                             System.out.println("Transfer failed. Insufficient funds.");
                         }
+                        scanner.nextLine(); // Consume newline
                     } else {
                         System.out.println("User not found.");
                     }
@@ -127,9 +162,26 @@ public class UserManager {
                     System.out.println("Transaction Log: \n" + user.getTransactionLog());
                     break;
                 case 5:
+                    System.out.print("Enter amount to withdraw: ");
+                    if (!scanner.hasNextDouble()) {
+                        System.out.println("Invalid input. Amount must be a number.");
+                        scanner.nextLine(); // Clear buffer
+                        break;
+                    }
+                    double withdrawalAmount = scanner.nextDouble();
+                    if (withdrawalAmount <= 0) {
+                        System.out.println("Withdrawal amount must be positive.");
+                    } else if (user.withdraw(withdrawalAmount)) {
+                        System.out.println("Withdrawal successful! New balance: " + user.getBalance() + " " + user.getCurrency());
+                    } else {
+                        System.out.println("Withdrawal failed. Insufficient funds.");
+                    }
+                    scanner.nextLine(); // Consume newline
+                    break;
+                case 6:
                     System.out.println("Logging out and returning to main menu.");
                     return;
-                case 6:
+                case 7:
                     System.out.println("Exiting system. Goodbye!");
                     System.exit(0);
                 default:
@@ -145,11 +197,5 @@ public class UserManager {
             }
         }
         return null;
-    }
-
-    public void handleUserCreation(Scanner scanner) {
-        if (!createUser(scanner)) {
-            System.out.println("Returning to main menu.");
-        }
     }
 }

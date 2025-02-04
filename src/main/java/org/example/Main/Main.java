@@ -13,12 +13,21 @@ public class Main {
             System.out.println("2. Create User");
             System.out.println("3. Exit");
             System.out.print("Choose an option: ");
+
+            if (!scanner.hasNextInt()) {
+                System.out.println("Invalid input. Please enter a number.");
+                scanner.nextLine(); // Clear buffer
+                continue;
+            }
             
             int choice = scanner.nextInt();
+            
             scanner.nextLine(); // Consume newline
+            
 
             switch (choice) {
                 case 1:
+                
                     userManager.handleUserLogin(scanner);
                     break;
                 case 2:
@@ -31,6 +40,6 @@ public class Main {
                 default:
                     System.out.println("Invalid option. Please try again.");
             }
-        }
+        }                       
     }
 }
